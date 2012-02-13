@@ -98,6 +98,14 @@ public abstract class AbstractSchemagenMojo
         for ( String path : (List < String > ) getCompileSourceRoots() )
         {
             File sourceDir = new File( path );
+
+            if (!sourceDir.exists()) {
+                getLog().info( "Skipping non-existent directory: " + sourceDir );
+                continue;
+            }
+
+            getLog().debug( "Checking " + sourceDir );
+
             try
             {
                 staleSources.addAll( staleSourceScanner.getIncludedSources( sourceDir, getOutputDirectory() ) );
@@ -120,10 +128,17 @@ public abstract class AbstractSchemagenMojo
             for ( String path : getCompileSourceRoots() )
             {
                 File sourceDir = new File( path );
+
                 if ( getLog().isDebugEnabled() )
                 {
                     getLog().debug( "sourceDir: " + sourceDir.getAbsolutePath() );
                 }
+
+                if (!sourceDir.exists()) {
+                    getLog().info( "Skipping non-existent directory: " + sourceDir );
+                    continue;
+                }
+
                 try
                 {
                     includedSources.addAll( FileUtils.getFileNames( sourceDir, includePaths, excludePaths, true ) );
@@ -183,7 +198,7 @@ public abstract class AbstractSchemagenMojo
         }
         else
         {
-            getLog().info( "no sources found skip generate schema" );
+            getLog().info( "no out-of-date sources found; skip generate schema" );
         }
     }
 
